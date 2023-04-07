@@ -13,6 +13,7 @@
       :data="tableData"
       tooltip-effect="dark"
       style="width: 100%"
+      height="calc(100vh - 150px)"
       :row-key="record=>record.id"
       border
       @selection-change="handleSelectionChange">
@@ -111,6 +112,18 @@
         </template>
       </el-table-column>
     </el-table>
+    <div>
+      <el-pagination
+        :current-page="currentPage"
+        :page-sizes="[10,20,30,40,50]"
+        :page-size="pageSize"
+        :total="tableData.length"
+        layout="sizes, prev, pager, next"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        style="margin-top: 20px; text-align: right;"
+      />
+    </div>
   </div>
 </template>
 
@@ -148,8 +161,50 @@ export default {
         date: '2016-05-07',
         name: '王小虎',
         address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-07',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-07',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-07',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-07',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-07',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-07',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-07',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-07',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-07',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-07',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
       }],
-      multipleSelection: []
+      multipleSelection: [], // 表格选中项
+      currentPage: 1,
+      pageSize: 10,
     }
   },
   methods: {
@@ -179,8 +234,18 @@ export default {
         this.$refs.multipleTable.clearSelection();
       }
     },
+    // 列表选中方法
     handleSelectionChange(val) {
+      console.log(val);
       this.multipleSelection = val;
+    },
+    // 更改每页展示多少条方法
+    handleSizeChange: function (size) {
+      this.pageSize = size;
+    },
+    // 更改页码方法
+    handleCurrentChange: function (currentPage) {
+      this.currentPage = currentPage;
     }
   }
 }
