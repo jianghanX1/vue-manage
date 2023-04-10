@@ -4,7 +4,7 @@ import Vue from 'vue';
 import App from './App';
 import router from './router';
 import axios from "axios";
-import { Table, TableColumn, Button, Tooltip, Popover, Upload, Message, Form, FormItem, Input, Select, Checkbox, CheckboxGroup, Radio, Pagination } from 'element-ui';
+import { Table, TableColumn, Button, Tooltip, Popover, Upload, Message, Form, FormItem, Input, Select, Checkbox, CheckboxGroup, Radio, Pagination, Loading, Empty } from 'element-ui';
 Vue.prototype.$message = Message
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
@@ -23,6 +23,8 @@ Vue.use(Checkbox)
 Vue.use(CheckboxGroup)
 Vue.use(Radio)
 Vue.use(Pagination)
+Vue.use(Loading)
+Vue.use(Empty)
 
 /* eslint-disable no-new */
 new Vue({

@@ -12,11 +12,20 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {  // 以/api开头的请求
-        target: 'http://jsonplaceholder.typicode.com/posts',
+        target: 'http://game.afantai.com/pmm/game/',
         // ws: true,
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
+        },
+        secure: false,
+      },
+      '/system': {  // 以/api开头的请求
+        target: 'http://game.afantai.com/pmm/system/',
+        // ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/system': ''
         },
         secure: false,
       },
