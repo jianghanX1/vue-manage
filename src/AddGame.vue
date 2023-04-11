@@ -5,6 +5,10 @@
         class="avatar-uploader"
         action="http://game.afantai.com/pmm/system/upload/image"
         ref="upload"
+        v-loading="uploadLoading"
+        element-loading-text="拼命上传中"
+        element-loading-spinner="el-icon-loading"
+        :on-progress="uploadFile"
         :headers="headers"
         :auto-upload="true"
         :show-file-list="false"
@@ -42,21 +46,18 @@
           <el-input v-model="form.playUrl" placeholder="请输入游戏URL"></el-input>
         </el-form-item>
         <el-form-item label="游戏类别">
-          <el-radio v-model="form.type" label="1">角色扮演</el-radio>
-          <el-radio v-model="form.type" label="2">休闲益智</el-radio>
-          <el-radio v-model="form.type" label="3">经营策略</el-radio>
-          <el-radio v-model="form.type" label="4">体育竞速</el-radio>
-          <el-radio v-model="form.type" label="5">动作射击</el-radio>
-          <el-radio v-model="form.type" label="6">棋牌桌游</el-radio>
+          <el-radio v-model="form.type" v-for="(item,index) in gameTypeList" :label="item.code" :key="index">{{item.name}}</el-radio>
         </el-form-item>
         <el-form-item label="屏幕适配">
           <el-radio v-model="form.adaptation" label="vertical">竖屏</el-radio>
           <el-radio v-model="form.adaptation" label="horizontal">横屏</el-radio>
         </el-form-item>
+        <el-form-item label="游戏状态">
+          <el-radio v-model="form.gameStatus" label="1">启用</el-radio>
+          <el-radio v-model="form.gameStatus" label="2">禁用</el-radio>
+        </el-form-item>
         <el-form-item label="游戏分级">
-          <el-radio v-model="form.classify" label="3+">3+</el-radio>
-          <el-radio v-model="form.classify" label="4+">4+</el-radio>
-          <el-radio v-model="form.classify" label="5+">5+</el-radio>
+          <el-radio v-model="form.classify" v-for="(item,index) in gameGradeList" :label="item.code" :key="index">{{item.name}}</el-radio>
         </el-form-item>
         <el-form-item label="语言">
           <el-radio v-model="form.language" label="chinese">中文</el-radio>
@@ -81,9 +82,10 @@ export default {
   name: "AddGame",
   data() {
     return {
+      uploadLoading: false,
       imageUrl: '',
       headers: {
-        'Authorization': '4bb65ab3b16d414fb60dd2afb2beee9d'
+        'Authorization': localStorage.getItem('token')
       },
       form: {
         name: '',
@@ -96,9 +98,12 @@ export default {
         playUrl: '', // 游戏URL
         type: '1',
         adaptation: 'vertical',
-        classify: '3+',
+        classify: '0',
         language: 'chinese',
+        gameStatus: '1', // 游戏状态
       },
+      gameTypeList: [], // 游戏类型
+      gameGradeList: [], // 游戏类型
       rules: {
         name: [
           { required: true, message: '请输入游戏名称' }
@@ -129,7 +134,7 @@ export default {
     };
   },
   mounted() {
-    // this.getGameType()
+    this.getGameType()
     const { query } = this.$route || {}
     const { gameId } = query || {}
     if (gameId) {
@@ -138,19 +143,27 @@ export default {
   },
   methods: {
     // 获取游戏类型
-    // getGameType() {
-    //   request({
-    //     url: '/system/dict',
-    //     method: 'get',
-    //     params: {
-    //       dictTypes: 1
-    //     }
-    //   }).then((res)=>{
-    //
-    //   }).catch((err)=>{
-    //     console.log(err);
-    //   })
-    // },
+    getGameType() {
+      request({
+        url: '/system/dict',
+        method: 'get',
+        params: {
+          dictTypes: 'game_type,game_grade'
+        }
+      }).then((res)=>{
+        const { data } = res || {}
+        const { code, data:dataObj } = data || {}
+        const { game_type, game_grade } = dataObj || {}
+        if (code == 1) {
+          this.gameTypeList = game_type
+          this.gameGradeList = game_grade
+        } else {
+          this.$message.error('获取游戏类别失败')
+        }
+      }).catch((err)=>{
+        console.log(err);
+      })
+    },
 
     // 回显
     getGameInfo(gameId) {
@@ -163,7 +176,7 @@ export default {
       }).then((res)=>{
         const { data } = res || {}
         const { code, data:dataObj } = data || {}
-        const { gameName, description, score, downloads, players, ranking, developer, playUrl, gameType, screenAdapter, gameGrade, language, iconUrl } = dataObj || {}
+        const { gameName, description, score, downloads, players, ranking, developer, playUrl, gameType, screenAdapter, gameGrade, language, iconUrl, isAvailable } = dataObj || {}
         if (code == 1) {
           this.form = {
             name: gameName,
@@ -178,8 +191,11 @@ export default {
             adaptation: screenAdapter,
             classify: gameGrade,
             language: language,
+            gameStatus: isAvailable ? '1' : '2'
           }
           this.imageUrl = iconUrl
+        } else {
+          this.$message.error('数据加载失败');
         }
       }).catch((err)=>{
         console.log(err);
@@ -201,15 +217,23 @@ export default {
     //   console.log(file.raw);
     //   this.imageUrl = URL.createObjectURL(file.raw)
     // },
+    uploadFile() {
+      this.uploadLoading = true
+    },
     uploadSuccess(res) {
       const { data } = res || {}
       this.imageUrl = data
+      this.uploadLoading = false
     },
     onSubmit(form) {
       console.log('submit!');
       console.log(this.$refs[form]);
       const { query } = this.$route || {}
       const { gameId } = query || {}
+      if (!this.imageUrl) {
+        this.$message.error('请上传游戏图标')
+        return
+      }
       this.$refs[form].validate((valid) => {
         if (valid) {
           request({
@@ -221,7 +245,7 @@ export default {
               gameId,
               gameName: this.form.name,
               gameType: this.form.type,
-              isAvailable: true,
+              isAvailable: this.form.gameStatus == 1 ? true : false,
               description: this.form.description,
               screenAdapter: this.form.adaptation,
               gameGrade: this.form.classify,
@@ -235,10 +259,15 @@ export default {
               playUrl: this.form.playUrl
             }//接口参数
           }).then((res)=>{
-            console.log(res);
-            this.$router.push({
-              path: '/'
-            },()=>{})
+            const { data } = res || {}
+            const { code } = data || {}
+            if (code == 1) {
+              this.$router.push({
+                path: '/gameList'
+              },()=>{})
+            } else {
+              this.$message.error('添加失败');
+            }
           }).catch((err)=>{
             console.log(err);
           })
@@ -250,7 +279,7 @@ export default {
     },
     cancel() {
       this.$router.push({
-        path: '/'
+        path: '/gameList'
       },()=>{})
     }
   }

@@ -49,7 +49,7 @@
       >
         <template slot-scope="scope">
           <div>
-            {{scope.row.gameType == 1 ? '角色扮演' : scope.row.gameType == 2 ? '休闲益智' : scope.row.gameType == 3 ? '经营策略' : scope.row.gameType == 4 ? '体育竞速' : scope.row.gameType == 5 ? '动作射击' : scope.row.gameType == 6 ? '棋牌桌游' : null}}
+            {{scope.row.gameType}}
           </div>
         </template>
       </el-table-column>
@@ -105,7 +105,7 @@
       </el-table-column>
       <el-table-column
         prop="ranking"
-        label="当前排名"
+        label="游戏排名"
       >
       </el-table-column>
       <el-table-column
@@ -116,8 +116,8 @@
       >
         <template slot-scope="scope">
           <div class="current_ranking">
-            <el-button @click="rankingClick(scope,1)" v-if="scope.$index !== 0"><i class="el-icon-top" /></el-button>
-            <el-button @click="rankingClick(scope,2)" v-if="scope.$index !== tableData.length - 1"><i class="el-icon-bottom" /></el-button>
+            <el-button @click="rankingClick(scope,1)"><i class="el-icon-top" /></el-button>
+            <el-button @click="rankingClick(scope,2)"><i class="el-icon-bottom" /></el-button>
             <el-button class="topping" @click="rankingClick(scope,3)"><i class="el-icon-download" /></el-button>
           </div>
         </template>
@@ -128,7 +128,7 @@
         :current-page="currentPage"
         :page-sizes="[10,20,30,40,50]"
         :page-size="pageSize"
-        :total="tableData.length"
+        :total="total"
         layout="sizes, prev, pager, next"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -149,6 +149,7 @@ export default {
       multipleSelection: [], // 表格选中项
       currentPage: 1,
       pageSize: 10,
+      total: 0
     }
   },
   mounted() {
@@ -174,6 +175,9 @@ export default {
         const { code, data:dataObj } = data || {}
         if (code == 1) {
           this.tableData =  dataObj.result || []
+          this.total = dataObj.total
+        } else {
+          this.$message.error('数据加载失败');
         }
       }).catch((err)=>{
         console.log(err);
@@ -222,6 +226,8 @@ export default {
         const { code } = data || {}
         if (code == 1) {
           this.getGameList()
+        } else {
+          this.$message.error('数据加载失败');
         }
       }).catch((err)=>{
         console.log(err);
@@ -239,13 +245,15 @@ export default {
         },// get接口参数
         data: {
           gameId, // 游戏Id
-          ranking: status === 1 ? ranking - 1 : status === 2 ? ranking + 1 : 1, // 1 提升  2 下降  3 置顶
+          ranking: status === 1 ? ranking == 1 ? 1 : ranking - 1 : status === 2 ? ranking + 1 : 1, // 1 提升  2 下降  3 置顶
         }
       }).then((res)=>{
         const { data } = res || {}
         const { code } = data || {}
         if (code == 1) {
           this.getGameList()
+        } else {
+          this.$message.error('数据加载失败');
         }
       }).catch((err)=>{
         console.log(err);

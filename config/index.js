@@ -11,6 +11,15 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
+      '/login': {  // 以/api开头的请求
+        target: 'http://game.afantai.com/pmm/user/',
+        // ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/login': ''
+        },
+        secure: false,
+      },
       '/api': {  // 以/api开头的请求
         target: 'http://game.afantai.com/pmm/game/',
         // ws: true,

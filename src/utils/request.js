@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { Message, MessageBox, Loading } from 'element-ui'  //导入element-ui组件库
+import { Message, MessageBox, Loading } from 'element-ui'
+import router from "../router";  //导入element-ui组件库
 
 // 创建axios的对象
 const instance = axios.create({
@@ -35,7 +36,7 @@ instance.interceptors.request.use(config => {
   config.data = JSON.stringify(config.data); //数据转化,也可以使用qs转换
   config.headers = {
     'Content-Type':'application/json', //配置请求头
-    'Authorization': '4bb65ab3b16d414fb60dd2afb2beee9d'
+    'Authorization': localStorage.getItem('token')
   }
   //如有需要：注意使用token的时候需要引入cookie方法或者用本地localStorage等方法，推荐js-cookie
   //const token = getCookie('名称');//这里取token之前，你肯定需要先拿到token,存一下
@@ -54,6 +55,12 @@ instance.interceptors.request.use(config => {
 // 3.响应拦截器
 instance.interceptors.response.use(response => {
   //接收到响应数据并成功后的一些共有的处理，关闭loading等
+  console.log(response);
+  const { data } = response || {}
+  const { code } = data || {}
+  if (code == -1003) {
+    localStorage.setItem('token','')
+  }
   closeLoading()
   return response
 }, error => {
@@ -63,6 +70,9 @@ instance.interceptors.response.use(response => {
     // 1.公共错误处理
     // 2.根据响应码具体处理
     switch (error.response.status) {
+      case 400:
+        error.message = '错误请求'
+        break;
       case 400:
         error.message = '错误请求'
         break;

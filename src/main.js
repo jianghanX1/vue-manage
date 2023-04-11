@@ -4,6 +4,8 @@ import Vue from 'vue';
 import App from './App';
 import router from './router';
 import axios from "axios";
+import md5 from 'js-md5'
+Vue.prototype.$md5 = md5
 import { Table, TableColumn, Button, Tooltip, Popover, Upload, Message, Form, FormItem, Input, Select, Checkbox, CheckboxGroup, Radio, Pagination, Loading, Empty } from 'element-ui';
 Vue.prototype.$message = Message
 Vue.prototype.$axios = axios
