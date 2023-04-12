@@ -3,8 +3,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
-console.log(process.env);
-console.log(11111);
+console.info(process.env.ENV_PATH,"====");
 module.exports = {
   dev: {
 
@@ -44,7 +43,10 @@ module.exports = {
     // https://vue-loader.vuejs.org/en/options.html#cachebusting
     cacheBusting: true,
 
-    cssSourceMap: true
+    cssSourceMap: true,
+    define:{
+      ENV_PATH: process.env.ENV_PATH || '',
+    }
   },
 
   build: {
