@@ -112,7 +112,11 @@ export default {
   }
 }
 </script>
-
+<style lang="less">
+  .el-loading-spinner{
+    font-size: 50px;
+  }
+</style>
 <style lang="less" scoped>
   .log_in{
     background: #ffffff;

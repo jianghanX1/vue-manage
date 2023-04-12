@@ -13,7 +13,7 @@
       :data="tableData"
       tooltip-effect="dark"
       style="width: 100%"
-      height="calc(100vh - 150px)"
+      height="calc(100vh - 200px)"
       :row-key="record=>record.id"
       border
     >
@@ -28,8 +28,8 @@
         <template slot-scope="scope">
           <div class="action_button">
             <el-button @click="edit(scope)">编辑</el-button>
-            <el-button @click="startUsing(scope,true)" v-if="!scope.row.isAvailable">启用</el-button>
-            <el-button @click="startUsing(scope,false)" v-else>禁用</el-button>
+            <el-button @click="startUsing(scope,true)" v-if="!scope.row.isAvailable" class="startUsing">启用</el-button>
+            <el-button @click="startUsing(scope,false)" v-else class="forbidden">禁用</el-button>
           </div>
         </template>
       </el-table-column>
@@ -60,7 +60,7 @@
       </el-table-column>
       <el-table-column
         prop="playUrl"
-        label="下载链接"
+        label="游戏URL"
       >
       </el-table-column>
       <el-table-column
@@ -304,6 +304,12 @@ export default {
     }
     .topping{
       transform: rotate(180deg);
+    }
+    .startUsing{
+      color: green;
+    }
+    .forbidden{
+      color: red;
     }
   }
 }

@@ -128,7 +128,8 @@ export default {
         //   { required: true, message: '请输入活动名称' }
         // ],
         playUrl: [
-          { required: true, message: '请输入游戏URL' }
+          { required: true, message: '请输入游戏URL' },
+          { pattern: /^(http(s)?:\/\/)?(www\.)?([0-9a-z-]{1,}.)?[0-9a-z-]{2,}.([0-9a-z-]{2,}.)?[a-z]{2,}$/i, message: '请输入正确格式' }
         ],
       }
     };
