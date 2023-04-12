@@ -145,7 +145,7 @@ export default {
     // 获取游戏类型
     getGameType() {
       request({
-        url: '/system/dict',
+        url: '/api/pmm/system/dict',
         method: 'get',
         params: {
           dictTypes: 'game_type,game_grade'
@@ -158,7 +158,7 @@ export default {
           this.gameTypeList = game_type
           this.gameGradeList = game_grade
         } else {
-          this.$message.error('获取游戏类别失败')
+          this.$message.error('获取游戏类别/分级失败')
         }
       }).catch((err)=>{
         console.log(err);
@@ -168,7 +168,7 @@ export default {
     // 回显
     getGameInfo(gameId) {
       request({
-        url: '/api/info',
+        url: '/api/pmm/game/info',
         method: 'get',
         params: {
           gameId: gameId
@@ -237,7 +237,7 @@ export default {
       this.$refs[form].validate((valid) => {
         if (valid) {
           request({
-            url: gameId ? "/api/update" : "/api/add",  //接口路径
+            url: gameId ? "/api/pmm/game/update" : "/api/pmm/game/add",  //接口路径
             method: "post",  //接口方法
             // headers: { 'Content-Type': 'multipart/form-data' }, //给接口添加请求头
             data:{

@@ -3,7 +3,8 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
-
+console.log(process.env);
+console.log(11111);
 module.exports = {
   dev: {
 
@@ -11,30 +12,12 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/login': {  // 以/api开头的请求
-        target: 'http://game.afantai.com/pmm/user/',
-        // ws: true,
-        changeOrigin: true,
-        pathRewrite: {
-          '^/login': ''
-        },
-        secure: false,
-      },
       '/api': {  // 以/api开头的请求
-        target: 'http://game.afantai.com/pmm/game/',
+        target: 'http://game.afantai.com/',
         // ws: true,
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
-        },
-        secure: false,
-      },
-      '/system': {  // 以/api开头的请求
-        target: 'http://game.afantai.com/pmm/system/',
-        // ws: true,
-        changeOrigin: true,
-        pathRewrite: {
-          '^/system': ''
         },
         secure: false,
       },
