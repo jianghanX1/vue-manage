@@ -81,6 +81,18 @@ import request from '@/utils/request.js'
 export default {
   name: "AddGame",
   data() {
+    var validateRanking = (rule, value, callback) => {
+      let number = /^[1-9][0-9]*$/.test(value)
+      if (value === '') {
+        callback(new Error('请输入游戏排名'))
+      } else if (!number){
+        callback(new Error(`请输入正确游戏排名`))
+      } else if (value < 1 || value > Number(this.$route.query.lastRankNo) + 1){
+        callback(new Error(`请输入正确游戏排名1-${Number(this.$route.query.lastRankNo) + 1}`))
+      } else {
+        callback()
+      }
+    }
     return {
       uploadLoading: false,
       imageUrl: '',
@@ -113,16 +125,19 @@ export default {
           { max: 140, message: '长度在140个字符' }
         ],
         score: [
-          { required: true, message: '请输入游戏评分' }
+          { required: true, message: '请输入游戏评分' },
+          { pattern: /^\d+(.\d{1})?$/, message: '请输入正确游戏评分' }
         ],
         downloads: [
-          { required: true, message: '请输入下载数量' }
+          { required: true, message: '请输入下载数量' },
+          { pattern: /(^\d$)|(^[1-9])/, message: '请输入正确下载数量' }
         ],
         players: [
-          { required: true, message: '请输入在玩人数' }
+          { required: true, message: '请输入在玩人数' },
+          { pattern: /(^\d$)|(^[1-9])/, message: '请输入正确在玩人数' }
         ],
         ranking: [
-          { required: true, message: '请输入游戏排名' }
+          { required: true, validator: validateRanking }
         ],
         // developer: [
         //   { required: true, message: '请输入活动名称' }
@@ -178,6 +193,18 @@ export default {
         const { data } = res || {}
         const { code, data:dataObj } = data || {}
         const { gameName, description, score, downloads, players, ranking, developer, playUrl, gameType, screenAdapter, gameGrade, language, iconUrl, isAvailable } = dataObj || {}
+        let type = '1'
+        let classify = '0'
+        this.gameTypeList.map((item)=>{
+          if (item.name == gameType) {
+            type = item.code
+          }
+        })
+        this.gameGradeList.map((item)=>{
+          if (item.name == gameGrade) {
+            classify = item.code
+          }
+        })
         if (code == 1) {
           this.form = {
             name: gameName,
@@ -188,9 +215,9 @@ export default {
             ranking: ranking, // 在玩人数
             developer: developer, // 开发商
             playUrl: playUrl, // 游戏URL
-            type: gameType,
+            type,
             adaptation: screenAdapter,
-            classify: gameGrade,
+            classify,
             language: language,
             gameStatus: isAvailable ? '1' : '2'
           }

@@ -2,7 +2,7 @@
   <div class="game_list">
     <div class="add_button">
       <div class="search">
-        <el-input placeholder="请输入游戏名称/游戏ID" v-model="nameSearch" @keyup.enter.native="onNameSearch">
+        <el-input placeholder="请输入游戏名称" v-model="nameSearch" @keyup.enter.native="onNameSearch">
           <el-button slot="append" icon="el-icon-search" @click="onNameSearch"></el-button>
         </el-input>
       </div>
@@ -22,11 +22,12 @@
       </template>
       <el-table-column
         label="操作"
-        width="110"
+        width="165"
         fixed
       >
         <template slot-scope="scope">
           <div class="action_button">
+            <el-button @click="deleteGame(scope)" style="color: red">删除</el-button>
             <el-button @click="edit(scope)">编辑</el-button>
             <el-button @click="startUsing(scope,true)" v-if="!scope.row.isAvailable" class="startUsing">启用</el-button>
             <el-button @click="startUsing(scope,false)" v-else class="forbidden">禁用</el-button>
@@ -116,9 +117,9 @@
       >
         <template slot-scope="scope">
           <div class="current_ranking">
-            <el-button @click="rankingClick(scope,1)"><i class="el-icon-top" /></el-button>
-            <el-button @click="rankingClick(scope,2)"><i class="el-icon-bottom" /></el-button>
-            <el-button class="topping" @click="rankingClick(scope,3)"><i class="el-icon-download" /></el-button>
+            <el-button @click="rankingClick(scope,1)" :disabled="scope.row.ranking == 1"><i class="el-icon-top" /></el-button>
+            <el-button @click="rankingClick(scope,2)" :disabled="scope.row.ranking == lastRankNo"><i class="el-icon-bottom" /></el-button>
+            <el-button class="topping" @click="rankingClick(scope,3)" :disabled="scope.row.ranking == 1"><i class="el-icon-download" /></el-button>
           </div>
         </template>
       </el-table-column>
@@ -149,7 +150,8 @@ export default {
       multipleSelection: [], // 表格选中项
       currentPage: 1,
       pageSize: 10,
-      total: 0
+      total: 0,
+      lastRankNo: null, // 最低排名
     }
   },
   mounted() {
@@ -176,6 +178,7 @@ export default {
         if (code == 1) {
           this.tableData =  dataObj.result || []
           this.total = dataObj.total
+          this.lastRankNo = dataObj.lastRankNo
         } else {
           this.$message.error('数据加载失败');
         }
@@ -190,8 +193,40 @@ export default {
     // 添加游戏
     addGame() {
       this.$router.push({
-        path: '/addGame'
+        path: '/addGame',
+        query: {
+          lastRankNo: this.lastRankNo
+        }
       },()=>{})
+    },
+    // 删除游戏
+    deleteGame (scope) {
+      console.log(scope);
+      const { row } = scope || {}
+      const { gameId } = row || {}
+      request({
+        url: "/api/pmm/game/delete",  //接口路径
+        method: "delete",  //接口方法
+        params:{
+          gameId, // 游戏Id
+        },// get接口参数
+        data: {
+
+        }
+      }).then((res)=>{
+        const { data } = res || {}
+        const { code } = data || {}
+        if (code == 1) {
+          this.currentPage = 1
+          this.$nextTick(()=>{
+            this.getGameList()
+          })
+        } else {
+          this.$message.error('数据加载失败');
+        }
+      }).catch((err)=>{
+        console.log(err);
+      })
     },
     // 编辑游戏
     edit(scope) {
@@ -201,7 +236,8 @@ export default {
       this.$router.push({
         path: '/addGame',
         query: {
-          gameId
+          gameId,
+          lastRankNo: this.lastRankNo
         }
       },()=>{})
     },
