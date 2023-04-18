@@ -144,7 +144,8 @@ export default {
         // ],
         playUrl: [
           { required: true, message: '请输入游戏URL' },
-          { pattern: /^(http(s)?:\/\/)?(www\.)?([0-9a-z-]{1,}.)?[0-9a-z-]{2,}.([0-9a-z-]{2,}.)?[a-z]{2,}$/i, message: '请输入正确格式' }
+          // { pattern: /^(http(s)?:\/\/)?(www\.)?([0-9a-z-]{1,}.)?[0-9a-z-]{2,}.([0-9a-z-]{2,}.)?[a-z]{2,}$/i, message: '请输入正确格式' }
+          { pattern: /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/, message: '请输入正确格式' }
         ],
       }
     };
@@ -230,11 +231,11 @@ export default {
       })
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg' || file.type === 'image/gif';
       const isLt2M = file.size / 1024 / 1024 < 2;
 
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!');
+        this.$message.error('上传头像图片只能是 jpg/jpeg/gif/png 格式!');
       }
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!');
@@ -249,8 +250,12 @@ export default {
       this.uploadLoading = true
     },
     uploadSuccess(res) {
-      const { data } = res || {}
-      this.imageUrl = data
+      const { code, data, msg } = res || {}
+      if (code == 1) {
+        this.imageUrl = data
+      } else {
+        this.$message.error(msg);
+      }
       this.uploadLoading = false
     },
     onSubmit(form) {
