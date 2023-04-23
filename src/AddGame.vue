@@ -3,7 +3,7 @@
     <div class="upload_box">
       <el-upload
         class="avatar-uploader"
-        action="http://game.afantai.com/pmm/system/upload/image"
+        :action="actionUrl"
         ref="upload"
         v-loading="uploadLoading"
         element-loading-text="拼命上传中"
@@ -94,6 +94,7 @@ export default {
       }
     }
     return {
+      actionUrl: `${this.$baseUrl}pmm/system/upload/image`,
       uploadLoading: false,
       imageUrl: '',
       headers: {
