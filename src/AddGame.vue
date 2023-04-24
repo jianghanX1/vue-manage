@@ -270,6 +270,12 @@ export default {
       }
       this.$refs[form].validate((valid) => {
         if (valid) {
+          let gameGrade = null
+          this.gameGradeList.map((item)=>{
+            if (item.code == this.form.classify) {
+              gameGrade = item.name
+            }
+          })
           request({
             url: gameId ? "/api/pmm/game/update" : "/api/pmm/game/add",  //接口路径
             method: "post",  //接口方法
@@ -282,7 +288,7 @@ export default {
               isAvailable: this.form.gameStatus == 1 ? true : false,
               description: this.form.description,
               screenAdapter: this.form.adaptation,
-              gameGrade: this.form.classify,
+              gameGrade,
               language: this.form.language,
               score: this.form.score,
               ranking: this.form.ranking,
