@@ -1,10 +1,10 @@
 import axios from 'axios'
-import { Message, MessageBox, Loading } from 'element-ui'
-import router from "../router";  //导入element-ui组件库
+import { Message, MessageBox, Loading } from 'element-ui' //导入element-ui组件库
 
+console.log(process.env.BASE_URL_HTTPS);
 // 创建axios的对象
 const instance = axios.create({
-  // baseURL: "https://api.cat-shop.penkuoer.com",  //配置固定域名
+  baseURL: process.env.BASE_URL_HTTPS,  //配置固定域名
   timeout: 5000
 })
 // loading框设置局部刷新，且所有请求完成后关闭loading框

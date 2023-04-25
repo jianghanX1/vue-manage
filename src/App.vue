@@ -24,7 +24,7 @@ export default {
   methods: {
     outClick() {
       request({
-        url: '/api/pmm/user/logout',
+        url: '/pmm/user/logout',
         method: 'get',
         params: {
           Authorization: localStorage.getItem('token')

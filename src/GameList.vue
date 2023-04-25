@@ -161,7 +161,7 @@ export default {
     // 获取游戏列表
     getGameList() {
       request({
-        url: "/api/pmm/game/list",  //接口路径
+        url: "/pmm/game/list",  //接口路径
         method: "get",  //接口方法
         // headers: { 'Content-Type': 'multipart/form-data' }, //给接口添加请求头
         params:{
@@ -205,7 +205,7 @@ export default {
       const { row } = scope || {}
       const { gameId } = row || {}
       request({
-        url: "/api/pmm/game/delete",  //接口路径
+        url: "/pmm/game/delete",  //接口路径
         method: "delete",  //接口方法
         params:{
           gameId, // 游戏Id
@@ -248,7 +248,7 @@ export default {
       const { row } = scope || {}
       const { gameId } = row || {}
       request({
-        url: "/api/pmm/game/update/available",  //接口路径
+        url: "/pmm/game/update/available",  //接口路径
         method: "post",  //接口方法
         params:{
 
@@ -274,7 +274,7 @@ export default {
       const { row } = scope || {}
       const { gameId, ranking } = row || {}
       request({
-        url: "/api/pmm/game/update/ranking",  //接口路径
+        url: "/pmm/game/update/ranking",  //接口路径
         method: "post",  //接口方法
         params:{
 

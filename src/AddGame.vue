@@ -94,7 +94,7 @@ export default {
       }
     }
     return {
-      actionUrl: `${this.$baseUrl}pmm/system/upload/image`,
+      actionUrl: `${process.env.BASE_URL_HTTPS}pmm/system/upload/image`,
       uploadLoading: false,
       imageUrl: '',
       headers: {
@@ -163,7 +163,7 @@ export default {
     // 获取游戏类型
     getGameType() {
       request({
-        url: '/api/pmm/system/dict',
+        url: '/pmm/system/dict',
         method: 'get',
         params: {
           dictTypes: 'game_type,game_grade'
@@ -186,7 +186,7 @@ export default {
     // 回显
     getGameInfo(gameId) {
       request({
-        url: '/api/pmm/game/info',
+        url: '/pmm/game/info',
         method: 'get',
         params: {
           gameId: gameId
@@ -277,7 +277,7 @@ export default {
             }
           })
           request({
-            url: gameId ? "/api/pmm/game/update" : "/api/pmm/game/add",  //接口路径
+            url: gameId ? "/pmm/game/update" : "/pmm/game/add",  //接口路径
             method: "post",  //接口方法
             // headers: { 'Content-Type': 'multipart/form-data' }, //给接口添加请求头
             data:{

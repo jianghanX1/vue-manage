@@ -83,7 +83,7 @@ export default {
       this.$refs[ruleForm].validate((valid) => {
         if (valid) {
           request({
-            url: "/api/pmm/user/login",  //接口路径
+            url: "/pmm/user/login",  //接口路径
             method: "post",  //接口方法
             // headers: { 'Content-Type': 'multipart/form-data' }, //给接口添加请求头
             data:{

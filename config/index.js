@@ -4,7 +4,7 @@
 
 const path = require('path')
 console.info(process.env.ENV_PATH,"====");
-let rootApi = process.env.ENV_PATH === 'pro' ? 'https://ah5game.com/' : 'http://game.afantai.com/'
+let rootApi = process.env.ENV_PATH === 'pro' ? 'https://ah5game.com' : 'http://game.afantai.com'
 module.exports = {
   dev: {
 
@@ -12,12 +12,12 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api': {  // 以/api开头的请求
+      [rootApi]: {  // 以/api开头的请求
         target: rootApi,
         // ws: true,
         changeOrigin: true,
         pathRewrite: {
-          '^/api': ''
+          ['^' + rootApi]: rootApi
         },
         secure: false,
       },

@@ -12,9 +12,6 @@ Vue.prototype.$axios = axios
 Vue.config.productionTip = false
 
 
-let rootApi = process.env.ENV_PATH === 'pro' ? 'https://ah5game.com/' : 'http://game.afantai.com/'
-Vue.prototype.$baseUrl = rootApi
-
 Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Button)
